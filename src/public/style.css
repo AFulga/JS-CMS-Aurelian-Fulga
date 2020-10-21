@@ -1,7 +1,255 @@
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+a:hover,
+.menu-item > a:hover,
+.cat-item a:hover {
+  color: #da4453;
+  transition: color 0.3s;
 }
 
 body {
-    text-align: center;
+  text-align: center;
+  color: #6b6b6b;
+  background-color: #f2f2f2;
+  font-family: "Open Sans", sans-serif;
+  line-height: 1.7;
+  font-size: 14px;
+}
+
+header {
+  background-color: #363636;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 100;
+}
+
+h1 {
+  margin: 0;
+}
+
+.nav-container,
+.menu-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.nav-container {
+  width: 1170px;
+  margin: auto;
+  padding: 0 15px;
+}
+
+.blog-name {
+  padding: 15px 15px;
+}
+
+a.logo {
+  color: #dadada;
+  font-size: 20px;
+  margin: 10px 0;
+  font-family: "Roboto Slab", serif;
+  height: 50px;
+  line-height: 20px;
+  text-decoration: none;
+}
+
+.menu-item {
+  padding: 15px;
+}
+
+.menu-item a {
+  color: #f5f7fa;
+  line-height: 40px;
+  text-transform: uppercase;
+  font-size: 12px;
+  padding: 15px 0;
+  text-decoration: none;
+}
+
+.menu-item:hover > a {
+  /* color: #da4453; */
+  background-color: transparent;
+}
+
+.posts-container {
+  width: 66%;
+  margin: 0 15px;
+}
+
+.post-body {
+  text-align: left;
+  color: #6b6b6b;
+  word-wrap: break-word;
+  font-family: "Open Sans", sans-serif;
+  line-height: 1.7;
+  font-size: 14px;
+}
+
+.post-title {
+  color: #444;
+  font-size: 28px;
+  margin-bottom: 30px;
+  font-weight: 700;
+  font-family: "Roboto Slab", serif;
+  text-align: left;
+
+  margin-top: 0px;
+}
+
+.post-title a {
+  color: #444;
+  text-decoration: none;
+  outline: 0;
+}
+
+.post-title a:hover,
+.post-title a:focus {
+  color: #da4453;
+  text-decoration: none;
+  outline: 0;
+}
+
+.post-wrap {
+  background-color: #fff;
+  border: 1px solid #dadada;
+  margin-bottom: 50px;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.post-img {
+  width: 100%;
+}
+
+.posts-page {
+  padding: 15px 50px 50px;
+}
+
+.post-time,
+.post-author,
+.post-comments {
+  margin-right: 10px;
+}
+
+.entry-meta {
+  text-align: left;
+  margin-bottom: 30px;
+}
+
+.read-more {
+  margin-top: 10px;
+  font-size: 12px;
+  padding: 11px 13px;
+  border-radius: 4px;
+  color: #fff;
+  text-transform: uppercase;
+  background-color: #da4453;
+  border-color: #da4453;
+  -webkit-transition: background-color 0.3s linear;
+  -moz-transition: background-color 0.3s linear;
+  -o-transition: background-color 0.3s linear;
+  transition: background-color 0.3s linear;
+  text-decoration: none;
+}
+
+a.read-more:hover {
+  background-color: #363636;
+  border-color: #363636;
+  color: #fff;
+  -webkit-transition: background-color 0.3s linear;
+  -moz-transition: background-color 0.3s linear;
+  -o-transition: background-color 0.3s linear;
+  transition: background-color 0.3s linear;
+}
+
+.read-more-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.page-content {
+  display: flex;
+  flex-direction: row;
+  width: 1170px;
+  margin-left: auto;
+  margin-right: auto;
+  top: 100px;
+  position: relative;
+}
+
+.side-content {
+  width: 33%;
+  background: #fff;
+  border: 1px solid #dadada;
+  border-radius: 4px;
+  text-align: left;
+  height: 100%;
+  margin: 0 15px;
+}
+
+.side-inner-content {
+  padding: 30px;
+}
+
+.cat-item {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #f2f2f2;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  color: #c1c0c0;
+}
+
+.cat-item a {
+  color: #c1c0c0;
+  text-decoration: none;
+}
+.social-icons {
+  display: flex;
+}
+
+.social-icons a {
+  height: 40px;
+  width: 40px;
+  display: flex;
+  text-decoration: none;
+  color: #fff;
+  background-color: #dadada;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  -webkit-transition: background-color 0.3s linear;
+  -moz-transition: background-color 0.3s linear;
+  -o-transition: background-color 0.3s linear;
+  transition: background-color 0.3s linear;
+  margin-right: 10px;
+}
+
+a.twitter-link:hover {
+  background-color: #55acee;
+}
+
+a.facebook-link:hover {
+  background-color: #4265b9;
+}
+
+a.youtube-link:hover,
+a.google-plus-link:hover {
+  background-color: #df3333;
+}
+
+.social-body {
+  margin-bottom: 50px;
+}
+
+.social-title,
+.cat-title {
+  font-family: roboto slab, serif;
+  font-size: 18px;
 }

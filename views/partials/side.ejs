@@ -1,0 +1,31 @@
+<div class="side-content">
+    <div class="side-inner-content">
+        <aside class="social-body">
+            <h3 class="social-title">FOLLOW ME</h3>
+            <div class="social-icons">
+                <a href="https://twitter.com" target="_blank" class="twitter-link">
+                    <i class="fab fa-twitter fa-lg"></i>
+                </a>
+                <a href="https://facebook.com" target="_blank" class="facebook-link">
+                    <i class="fab fa-facebook-f fa-lg"></i>
+                </a>
+                <a href="https://youtube.com" target="_blank" class="youtube-link">
+                    <i class="fab fa-youtube fa-lg"></i>
+                </a>
+                <a href="https://plus.google.com" target="_blank" class="google-plus-link">
+                    <i class="fab fa-google-plus-g fa-lg"></i>
+                </a>
+            </div>
+        </aside>
+        <aside class="categories-content">
+            <h3 class="cat-title">CATEGORIES</h3>
+            <% categories.forEach(categorie => { %>
+
+            <div class="cat-item">
+                <a href="" class="cat-link"><%= categorie.title %></a>
+                <span><%= categorie.counter %></span>
+            </div>
+            <% }) %>
+        </aside>
+    </div>
+</div>

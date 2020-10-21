@@ -1,15 +1,16 @@
-<!-- @todo: De făcut să arate frumos💄! -->
-<!-- @todo: De completat cu informații! -->
 <%- include('../partials/header') %>
-<header>
-    <h1>Welcome to my Blog 🎉</h1>
-</header>
-<div>
-    <% posts.forEach(post => { %>
-    <article>
-        <h2><a href="/posts/<%= post.slug %>"><%= post.title %></a></h2>
-        <p><%= post.content %></p>
-    </article>
-    <% }) %>
+<div class="page-content">
+    <%- include('../partials/mainContent', {posts}); %>
+    <%- include('../partials/side', {
+        categories: posts.reduce((cat, post) => { 
+            const {category, slug} = post; 
+            const index = cat.findIndex(el => el.title === category); 
+            if(index !== -1) { 
+                cat[index].counter++;
+            } else { 
+                cat.push({ title: category, slug, counter: 1 });
+            } 
+            return cat;
+        }, [])}); %>
 </div>
 <%- include('../partials/footer') %>

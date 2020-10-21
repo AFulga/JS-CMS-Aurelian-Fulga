@@ -1,9 +1,11 @@
-<!-- @todo: De completat cu informații! -->
 <%- include('../partials/header') %>
-<header>
-    <h1><%= post.title %></h1>
-</header>
-<div>
-    <%- post.content %>
+
+<div class="posts-container">
+    <div class="post-inner-content">
+        <article>
+            <h2 class="post-title"><a href="/posts/<%= post.slug %>"><%= post.title %></a></h2>
+            <div class="post-body"><%- post.content %></div>
+        </article>
+    </div>
 </div>
 <%- include('../partials/footer') %>

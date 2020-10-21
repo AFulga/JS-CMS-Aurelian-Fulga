@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,13 +8,30 @@
     <link rel="stylesheet" href="style.css">
     <script defer src="static.js"></script>
 </head>
+
 <body>
-    <h1>Panou de administrare</h1>
-    <div id="posts">
-        <h2>Articole</h2>
-        <ul id="posts-list">
-            <!-- List will be populated on init -->
-        </ul>
+    <header>
+        <div class="header-container">
+            <h1>Dashboard</h1>
+        </div>
+
+    </header>
+    <div class="admin-container">
+        <div class="side-nav">
+            <div class="menu-item">
+                <a href="#posts">Posts</a>
+            </div>
+            <div class="menu-item">
+                <a href="#addPosts">Add Post</a>
+            </div>
+        </div>
+        <div class="admin-body">
+            <ul id="posts-list">
+                <!-- List will be populated on init -->
+            </ul>
+        </div>
     </div>
+
 </body>
+
 </html>

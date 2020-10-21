@@ -8,19 +8,27 @@ let counter = 0;
 const add = (table, item) => {
   // create
   item.id = counter++;
+
+  if (!item.title || !item.content) {
+    return null;
+  }
   data[table].push(item);
   return item;
 };
 
 const getBy = (table, key, value) => {
   // read by key
-  const item = data[table].find((dataItem) => dataItem[key] === value);
+  const item = data[table].find(
+    (dataItem) => dataItem && dataItem[key] === value
+  );
+
   return item;
 };
 const get = (table, id) => {
   // read
   return getBy(table, "id", id);
 };
+
 const set = (table, updatedItem) => {
   // update
   const itemIndex = data[table].findIndex(
@@ -38,7 +46,9 @@ const set = (table, updatedItem) => {
 };
 const remove = (table, id) => {
   // delete
-  const itemIndex = data[table].findIndex((dataItem) => dataItem.id === id);
+  const itemIndex = data[table].findIndex(
+    (dataItem) => dataItem && dataItem.id === id
+  );
   delete data[table][itemIndex];
   return itemIndex === -1 ? false : true;
 };
