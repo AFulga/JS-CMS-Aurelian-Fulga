@@ -2,17 +2,36 @@
 // pentru a interacționa cu acest obiect, vom crea metodele CRUD
 const data = {
   posts: [],
+  categoryList: [],
 };
 let counter = 0;
 
+function updateCategoryList(category, isCatUpdated) {
+  const indexCat = data.categoryList.findIndex((cat) => cat.title === category);
+  if (indexCat === -1) {
+    data.categoryList.push({
+      title: category,
+      counter: 1,
+    });
+  } else {
+    if (isCatUpdated) {
+      data.categoryList[indexCat].counter--;
+    } else {
+      data.categoryList[indexCat].counter++;
+    }
+  }
+}
+
 const add = (table, item) => {
   // create
+  const { title, content, category } = item;
   item.id = counter++;
 
-  if (!item.title || !item.content) {
+  if (!title || !content) {
     return null;
   }
   data[table].push(item);
+  updateCategoryList(category);
   return item;
 };
 
@@ -26,7 +45,7 @@ const getBy = (table, key, value) => {
 };
 const get = (table, id) => {
   // read
-  return getBy(table, "id", id);
+  return getBy(table, 'id', id);
 };
 
 const set = (table, updatedItem) => {
@@ -39,9 +58,15 @@ const set = (table, updatedItem) => {
       counter = updatedItemid + 1;
     }
     data[table].push(updatedItem);
+    updateCategoryList(updatedItem.category);
     return updatedItem;
   }
   const item = data[table][itemIndex];
+  if (item.category !== updatedItem.category) {
+    updateCategoryList(updatedItem.category);
+    updateCategoryList(item.category, true);
+  }
+  item = { ...item, ...updatedItem };
   return item;
 };
 const remove = (table, id) => {
@@ -49,7 +74,8 @@ const remove = (table, id) => {
   const itemIndex = data[table].findIndex(
     (dataItem) => dataItem && dataItem.id === id
   );
-  delete data[table][itemIndex];
+  const item = data[table].splice(itemIndex, 1);
+  updateCategoryList(item.category, true);
   return itemIndex === -1 ? false : true;
 };
 

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://kit.fontawesome.com/c88ab02d7f.js" crossorigin="anonymous"></script>
     <script defer src="static.js"></script>
 </head>
 
@@ -29,6 +30,19 @@
             <ul id="posts-list">
                 <!-- List will be populated on init -->
             </ul>
+            <div class="update-form">
+                <input type="text" placeholder="Post title" id="postTitle" />
+                <input type="text" placeholder="Category" id="postCategory">
+                <div class="category-wrap">
+                    <select name="Category list" id="postCategoryList">
+                        <option value="">Select category</option>
+                    </select>
+                    <i class="fas fa-plus fa-lg" title="Add new category"></i>
+                </div>
+                <input type="text" placeholder="Author" id="postAuthor">
+                <textarea name="post-content" id="postContent" cols="30" rows="10" placeholder="Content"></textarea>
+            </div>
+
         </div>
     </div>
 

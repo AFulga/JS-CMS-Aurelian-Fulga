@@ -4,42 +4,42 @@
 // @todo: Transformă pagina într-o operă de artă
 function dateFormat(d) {
   d = new Date(d);
-  const ye = new Intl.DateTimeFormat("en", { year: "numeric" }).format(d);
-  const mo = new Intl.DateTimeFormat("en", { month: "long" }).format(d);
-  const da = new Intl.DateTimeFormat("en", { day: "numeric" }).format(d);
+  const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(d);
+  const mo = new Intl.DateTimeFormat('en', { month: 'long' }).format(d);
+  const da = new Intl.DateTimeFormat('en', { day: 'numeric' }).format(d);
 
   return `${mo} ${da}, ${ye}`;
 }
 
 function createButton(content, classList) {
-  return createElement("button", content, classList);
+  return createElement('button', content, classList);
 }
 
 function createElement(type, content, className) {
   const $element = document.createElement(type);
 
-  if (typeof content === "string") {
+  if (typeof content === 'string') {
     $element.textContent = content;
   } else {
-    if (typeof content === "object") {
+    if (typeof content === 'object') {
       content.forEach((el) => $element.appendChild(el));
     } else {
       $element.appendChild(content);
     }
   }
 
-  $element.classList.add(...className.split(" "));
+  $element.classList.add(...className.split(' '));
 
   return $element;
 }
 
 function createRow(content, className) {
-  const $li = document.createElement("li");
+  const $li = document.createElement('li');
   $li.classList.add(className);
-  const $el1 = createElement("div", content[0], "flex-2");
-  const $el2 = createElement("div", content[1], "flex-1");
-  const $el3 = createElement("div", content[2], "flex-1");
-  const $el4 = createElement("div", content[3], "flex-1");
+  const $el1 = createElement('div', content[0], 'flex-2');
+  const $el2 = createElement('div', content[1], 'flex-1');
+  const $el3 = createElement('div', content[2], 'flex-1');
+  const $el4 = createElement('div', content[3], 'flex-1');
 
   $li.appendChild($el1);
   $li.appendChild($el2);
@@ -51,18 +51,18 @@ function createRow(content, className) {
 
 // get and render posts
 function fetchPosts() {
-  return fetch("/admin/api/posts")
+  return fetch('/admin/api/posts')
     .then((response) => response.json())
     .then((posts) => posts)
-    .catch((error) => console.error("Error for fetchPosts", error));
+    .catch((error) => console.error('Error for fetchPosts', error));
 }
 
 function renderPosts(posts) {
-  const $posts = document.querySelector("#posts-list");
-  $posts.innerHTML = "";
+  const $posts = document.querySelector('#posts-list');
+  $posts.innerHTML = '';
   const $headerRow = createRow(
-    ["Title", "Category", "Date", "Action"],
-    "header-row"
+    ['Title', 'Category', 'Date', 'Action'],
+    'header-row'
   );
   $posts.appendChild($headerRow);
   posts.forEach((post) => {
@@ -74,11 +74,11 @@ function renderPosts(posts) {
           category,
           dateFormat(postDate),
           [
-            createButton("Update", "update-button"),
-            createButton("Delete", "delete-button"),
+            createButton('Update', 'update-button'),
+            createButton('Delete', 'delete-button'),
           ],
         ],
-        "post-row"
+        'post-row'
       );
       // document.createElement('li');
       // $post.textContent = post.title;
@@ -91,16 +91,16 @@ function renderPosts(posts) {
 }
 
 function initEvents() {
-  const $posts = document.querySelector("#posts-list");
-  $posts.addEventListener("click", (event) => {
+  const $posts = document.querySelector('#posts-list');
+  $posts.addEventListener('click', (event) => {
     // Handle delete
-    if (event.target.classList.contains("delete-button")) {
+    if (event.target.classList.contains('delete-button')) {
       // @todo: Șterge postarea și din baza de date
       // call DELETE /admin/api/posts/:postId
       // console.log('remove post with id', event.target.parentNode.dataset.postId);
-      const id = event.target.parentNode.parentNode.dataset.postId;
+      const id = event.target.closest('li').dataset.postId;
 
-      fetch(`/admin/api/posts/${id}`, { method: "DELETE" })
+      fetch(`/admin/api/posts/${id}`, { method: 'DELETE' })
         .then((resp) => fetchPosts().then(renderPosts))
         .catch((err) => console.error(error));
       // $posts.removeChild(event.target.parentNode.parentNode);
@@ -108,6 +108,21 @@ function initEvents() {
 
     // Handle update
     // @todo: Adaugă logica pentru update
+
+    if (event.target.classList.contains('update-button')) {
+      const id = event.target.closest('li').dataset.postId;
+      const $postTitle = document.querySelector('#postTitle');
+      const $postCategory = document.querySelector('#postCategory');
+      const $postCategoryList = document.querySelector('#postCategoryList');
+      const $postAuthor = document.querySelector('#postAuthor');
+      const $postContent = document.querySelector('#postContent');
+
+      fetch(`/admin/api/posts/${id}`)
+        .then((resp) => resp.json())
+        .then((resp) => console.log(resp))
+        .catch((err) => console.error(error));
+      // $posts.removeChild(event.target.parentNode.parentNode);
+    }
   });
 }
 function init() {
