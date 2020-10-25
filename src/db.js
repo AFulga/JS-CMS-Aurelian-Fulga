@@ -6,20 +6,42 @@ const data = {
 };
 let counter = 0;
 
-function updateCategoryList(category, isCatUpdated) {
+function updateCategoryList(category, postId, oldCategoryTitle) {
   const indexCat = data.categoryList.findIndex((cat) => cat.title === category);
-  if (indexCat === -1) {
+  const categoryToupdate = data.categoryList.find(
+    (cat) => cat.title === category
+  );
+  const oldCategory = data.categoryList.find(
+    (cat) => cat.title === oldCategoryTitle
+  );
+
+  if (categoryToupdate) {
+    if (categoryToupdate.postIds.indexOf(postId) === -1) {
+      categoryToupdate.postIds.push(postId);
+    }
+  } else {
     data.categoryList.push({
       title: category,
-      counter: 1,
+      postIds: [postId],
     });
-  } else {
-    if (isCatUpdated) {
-      data.categoryList[indexCat].counter--;
-    } else {
-      data.categoryList[indexCat].counter++;
-    }
   }
+
+  if (oldCategory) {
+    oldCategory.postIds = oldCategory.postIds.filter((id) => id !== postId);
+  }
+
+  // if (indexCat === -1) {
+  //   data.categoryList.push({
+  //     title: category,
+  //     counter: 1,
+  //   });
+  // } else {
+  //   if (isCatUpdated) {
+  //     data.categoryList[indexCat].counter--;
+  //   } else {
+  //     data.categoryList[indexCat].counter++;
+  //   }
+  // }
 }
 
 const add = (table, item) => {
@@ -31,7 +53,7 @@ const add = (table, item) => {
     return null;
   }
   data[table].push(item);
-  updateCategoryList(category);
+  updateCategoryList(category, item.id);
   return item;
 };
 
@@ -58,13 +80,13 @@ const set = (table, updatedItem) => {
       counter = updatedItemid + 1;
     }
     data[table].push(updatedItem);
-    updateCategoryList(updatedItem.category);
+    updateCategoryList(updatedItem.category, updatedItem.id);
     return updatedItem;
   }
   const item = data[table][itemIndex];
   if (item.category !== updatedItem.category) {
-    updateCategoryList(updatedItem.category);
-    updateCategoryList(item.category, true);
+    updateCategoryList(updatedItem.category, updatedItem.id, item.category);
+    // updateCategoryList(item.category, true);
   }
   item = { ...item, ...updatedItem };
   return item;
@@ -75,7 +97,7 @@ const remove = (table, id) => {
     (dataItem) => dataItem && dataItem.id === id
   );
   const item = data[table].splice(itemIndex, 1);
-  updateCategoryList(item.category, true);
+  updateCategoryList(item.category, id);
   return itemIndex === -1 ? false : true;
 };
 

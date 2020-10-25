@@ -1,16 +1,8 @@
+<% console.log(posts) %>
+<% console.log(categoryList) %>
 <%- include('../partials/header') %>
 <div class="page-content">
     <%- include('../partials/mainContent', {posts}); %>
-    <%- include('../partials/side', {
-        categories: posts.reduce((cat, post) => { 
-            const {category, slug} = post; 
-            const index = cat.findIndex(el => el.title === category); 
-            if(index !== -1) { 
-                cat[index].counter++;
-            } else { 
-                cat.push({ title: category, slug, counter: 1 });
-            } 
-            return cat;
-        }, [])}); %>
+    <%- include('../partials/side', { categoryList }); %>
 </div>
 <%- include('../partials/footer') %>

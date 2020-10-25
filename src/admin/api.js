@@ -5,8 +5,12 @@ const router = express.Router();
 
 router.get('/posts', (req, res) => {
   const posts = db.getAll('posts');
-  console.log(Object.keys(posts[0]));
   res.send(posts);
+});
+
+router.get('/categoryList', (req, res) => {
+  const categoryList = db.getAll('categoryList');
+  res.send(categoryList);
 });
 // @todo: de adăugat toate rutele necesare pentru a avea un API restfull
 

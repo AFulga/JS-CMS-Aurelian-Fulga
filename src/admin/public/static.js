@@ -28,7 +28,9 @@ function createElement(type, content, className) {
     }
   }
 
-  $element.classList.add(...className.split(' '));
+  if (className) {
+    $element.classList.add(...className.split(' '));
+  }
 
   return $element;
 }
@@ -55,6 +57,40 @@ function fetchPosts() {
     .then((response) => response.json())
     .then((posts) => posts)
     .catch((error) => console.error('Error for fetchPosts', error));
+}
+
+function fetchCategories() {
+  return fetch('/admin/api/categoryList')
+    .then((categoryList) => categoryList.json())
+    .then((categoryList) => categoryList)
+    .catch((error) => console.error('Error for fetchCatrgories', error));
+}
+
+function populateUpdateForm(data) {
+  const $postTitle = document.querySelector('#postTitle');
+  const $postCategory = document.querySelector('#postCategory');
+  const $postCategoryList = document.querySelector('#postCategoryList');
+  const $postAuthor = document.querySelector('#postAuthor');
+  const $postContent = document.querySelector('#postContent');
+
+  data.forEach((item) => {
+    if (Array.isArray(item)) {
+      $postCategoryList.innerHTML = $postCategoryList.children[0].outerHTML;
+      item.forEach((cat, index) => {
+        const $option = createElement('option', cat.title);
+
+        $option.value = index + 1;
+        $postCategoryList.appendChild($option);
+      });
+    } else {
+      console.log('dditemd', item);
+      const { title, category, author, content } = item.posts[0];
+      $postTitle.value = title;
+      $postCategory.value = category;
+      $postAuthor.value = author;
+      $postContent.value = content;
+    }
+  });
 }
 
 function renderPosts(posts) {
@@ -93,12 +129,12 @@ function renderPosts(posts) {
 function initEvents() {
   const $posts = document.querySelector('#posts-list');
   $posts.addEventListener('click', (event) => {
+    const id = event.target.closest('li').dataset.postId;
     // Handle delete
     if (event.target.classList.contains('delete-button')) {
       // @todo: Șterge postarea și din baza de date
       // call DELETE /admin/api/posts/:postId
       // console.log('remove post with id', event.target.parentNode.dataset.postId);
-      const id = event.target.closest('li').dataset.postId;
 
       fetch(`/admin/api/posts/${id}`, { method: 'DELETE' })
         .then((resp) => fetchPosts().then(renderPosts))
@@ -110,21 +146,37 @@ function initEvents() {
     // @todo: Adaugă logica pentru update
 
     if (event.target.classList.contains('update-button')) {
-      const id = event.target.closest('li').dataset.postId;
-      const $postTitle = document.querySelector('#postTitle');
-      const $postCategory = document.querySelector('#postCategory');
-      const $postCategoryList = document.querySelector('#postCategoryList');
-      const $postAuthor = document.querySelector('#postAuthor');
-      const $postContent = document.querySelector('#postContent');
+      Promise.all([
+        fetchCategories().then((cat) => cat),
+        fetch(`/admin/api/posts/${id}`)
+          .then((resp) => resp.json())
+          .then((resp) => resp),
+      ])
+        .then((values) => {
+          console.log(values);
+          populateUpdateForm(values);
+          // values.forEach(val => {
+          //   if(Array.isArray(val) {
+          //     val.forEach(el => {
+          //       const $option = document.createElement
+          //     })
+          //   }
+          // })
+        })
+        .catch((err) => console.error(err));
 
-      fetch(`/admin/api/posts/${id}`)
-        .then((resp) => resp.json())
-        .then((resp) => console.log(resp))
-        .catch((err) => console.error(error));
+      // fetch(`/admin/api/posts/${id}`)
+      //   .then((resp) => resp.json())
+      //   .then((resp) => {
+      //     fetchCategories().then((cat) => console.log(cat));
+      //     console.log(resp);
+      //   })
+      //   .catch((err) => console.error(error));
       // $posts.removeChild(event.target.parentNode.parentNode);
     }
   });
 }
+
 function init() {
   fetchPosts().then(renderPosts);
   initEvents();

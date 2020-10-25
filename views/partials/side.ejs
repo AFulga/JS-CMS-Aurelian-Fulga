@@ -19,11 +19,11 @@
         </aside>
         <aside class="categories-content">
             <h3 class="cat-title">CATEGORIES</h3>
-            <% categories.forEach(categorie => { %>
+            <% categoryList.forEach(categorie => { %>
 
             <div class="cat-item">
                 <a href="" class="cat-link"><%= categorie.title %></a>
-                <span><%= categorie.counter %></span>
+                <span><%= categorie.postIds.length %></span>
             </div>
             <% }) %>
         </aside>

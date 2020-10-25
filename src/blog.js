@@ -1,24 +1,25 @@
-const express = require("express");
-const db = require("./db");
-const hp = require("./helpers");
+const express = require('express');
+const db = require('./db');
+const hp = require('./helpers');
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  const posts = db.getAll("posts").map((post) => {
-    return hp.postFormatter(post, "shortContent");
+router.get('/', (req, res) => {
+  const posts = db.getAll('posts').map((post) => {
+    return hp.postFormatter(post, 'shortContent');
   });
-  const getPosts = { posts };
-  res.render("pages/home", getPosts);
+  const categoryList = db.getAll('categoryList');
+  const getPosts = { posts, categoryList };
+  res.render('pages/home', getPosts);
 });
 
-router.get("/posts/:slug", (req, res) => {
+router.get('/posts/:slug', (req, res) => {
   const slug = req.params.slug;
-  const post = hp.postFormatter(db.getBy("posts", "slug", slug), "longContent");
+  const post = hp.postFormatter(db.getBy('posts', 'slug', slug), 'longContent');
   if (post) {
-    res.render("pages/single", { post });
+    res.render('pages/single', { post });
   } else {
-    res.render("pages/notFound", {});
+    res.render('pages/notFound', {});
   }
 });
 

@@ -227,6 +227,13 @@ select {
   margin-left: 5px;
   cursor: pointer;
 }
+.fa-plus:hover {
+  color: #363636;
+  -webkit-transition: color 0.3s linear;
+  -moz-transition: color 0.3s linear;
+  -o-transition: color 0.3s linear;
+  transition: color 0.3s linear;
+}
 /* a.logo {
     color: #dadada;
     font-size: 20px;
