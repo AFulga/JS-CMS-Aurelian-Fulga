@@ -66,35 +66,72 @@ function fetchCategories() {
     .catch((error) => console.error('Error for fetchCatrgories', error));
 }
 
-function populateUpdateForm(data) {
+function getFormData() {
   const $postTitle = document.querySelector('#postTitle');
   const $postCategory = document.querySelector('#postCategory');
   const $postCategoryList = document.querySelector('#postCategoryList');
   const $postAuthor = document.querySelector('#postAuthor');
   const $postContent = document.querySelector('#postContent');
 
-  data.forEach((item) => {
-    if (Array.isArray(item)) {
-      $postCategoryList.innerHTML = $postCategoryList.children[0].outerHTML;
-      item.forEach((cat, index) => {
-        const $option = createElement('option', cat.title);
+  return {
+    title: $postTitle.value,
+    category: $postCategory.value,
+    author: $postAuthor.value,
+    content: $postContent.value,
+    lastUpdate: new Date(),
+  };
+}
 
-        $option.value = index + 1;
-        $postCategoryList.appendChild($option);
-      });
-    } else {
-      console.log('dditemd', item);
-      const { title, category, author, content } = item.posts[0];
-      $postTitle.value = title;
-      $postCategory.value = category;
-      $postAuthor.value = author;
-      $postContent.value = content;
+function populateUpdateForm(categories, post) {
+  const $postTitle = document.querySelector('#postTitle');
+  const $postCategory = document.querySelector('#postCategory');
+  const $postCategoryList = document.querySelector('#postCategoryList');
+  const $postAuthor = document.querySelector('#postAuthor');
+  const $postContent = document.querySelector('#postContent');
+  const $postUpdateBtn = document.querySelector('#postUpdateBtn');
+
+  $postCategoryList.innerHTML = $postCategoryList.children[0].outerHTML;
+  const { title, category, author, content, _id } = post.posts;
+
+  categories.forEach((cat, index) => {
+    const $option = createElement('option', cat.title);
+    if (cat.title === category) {
+      $option.selected = true;
     }
+    $option.value = index + 1;
+    $postCategoryList.appendChild($option);
   });
+
+  $postTitle.value = title;
+  $postCategory.value = category;
+  $postAuthor.value = author;
+  $postContent.value = content;
+
+  $postUpdateBtn.dataset.postId = _id;
+
+  // data.forEach((item) => {
+  //   if (Array.isArray(item)) {
+  //     $postCategoryList.innerHTML = $postCategoryList.children[0].outerHTML;
+  //     item.forEach((cat, index) => {
+  //       const $option = createElement('option', cat.title);
+
+  //       $option.value = index + 1;
+  //       $postCategoryList.appendChild($option);
+  //     });
+  //   } else {
+  //     console.log('dditemd', item);
+  //     const { title, category, author, content } = item.posts[0];
+  //     $postTitle.value = title;
+  //     $postCategory.value = category;
+  //     $postAuthor.value = author;
+  //     $postContent.value = content;
+  //   }
+  // });
 }
 
 function renderPosts(posts) {
   const $posts = document.querySelector('#posts-list');
+
   $posts.innerHTML = '';
   const $headerRow = createRow(
     ['Title', 'Category', 'Date', 'Action'],
@@ -103,7 +140,7 @@ function renderPosts(posts) {
   $posts.appendChild($headerRow);
   posts.forEach((post) => {
     if (post) {
-      const { title, id, postDate, category } = post;
+      const { title, _id, postDate, category } = post;
       const $postRow = createRow(
         [
           title,
@@ -118,7 +155,7 @@ function renderPosts(posts) {
       );
       // document.createElement('li');
       // $post.textContent = post.title;
-      $postRow.dataset.postId = id;
+      $postRow.dataset.postId = _id;
 
       // $post.appendChild(createDeleteButton());
       $posts.appendChild($postRow);
@@ -128,8 +165,10 @@ function renderPosts(posts) {
 
 function initEvents() {
   const $posts = document.querySelector('#posts-list');
+  const $postUpdateBtn = document.querySelector('#postUpdateBtn');
   $posts.addEventListener('click', (event) => {
     const id = event.target.closest('li').dataset.postId;
+
     // Handle delete
     if (event.target.classList.contains('delete-button')) {
       // @todo: Șterge postarea și din baza de date
@@ -153,8 +192,7 @@ function initEvents() {
           .then((resp) => resp),
       ])
         .then((values) => {
-          console.log(values);
-          populateUpdateForm(values);
+          populateUpdateForm(...values);
           // values.forEach(val => {
           //   if(Array.isArray(val) {
           //     val.forEach(el => {
@@ -174,6 +212,16 @@ function initEvents() {
       //   .catch((err) => console.error(error));
       // $posts.removeChild(event.target.parentNode.parentNode);
     }
+  });
+  $postUpdateBtn.addEventListener('click', function (event) {
+    const id = this.dataset.postId;
+    fetch(`/admin/api/posts/${id}`, {
+      method: 'PUT', // or 'PUT'
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(getFormData()),
+    }).then((resp) => fetchPosts().then(renderPosts));
   });
 }
 

@@ -1,5 +1,45 @@
 // vom stoca datele în memorie, prin obiectul local data
 // pentru a interacționa cu acest obiect, vom crea metodele CRUD
+
+const MongoClient = require('mongodb').MongoClient;
+const populate = require('./populateDb');
+
+const getMongoUri = () => {
+  // Datele din process.env sunt cele din fișierul .env, dacă nu există, trebuie creat după modelul .env.example
+  const user = encodeURIComponent(process.env.mongoUser);
+  const pass = encodeURIComponent(process.env.mongoPass);
+  const url = process.env.mongoUrl;
+  return `mongodb+srv://${user}:${pass}@${url}`;
+};
+console.log(getMongoUri());
+const client = new MongoClient(getMongoUri(), {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+module.exports = { client };
+
+client
+  .connect()
+  .then(() => console.log('MongoDB connected'))
+
+  .then(() => {
+    const posts = client.db('app').collection('posts');
+    module.exports.posts = posts;
+    populate(posts);
+  })
+  .catch((error) =>
+    console.error('Error on connecting to MongoDB server', error)
+  );
+/*
+client.connect(err => {
+  const collection = client.db("test").collection("devices");
+  // perform actions on the collection object
+  client.close();
+});
+
+
+
 const data = {
   posts: [],
   categoryList: [],
@@ -7,7 +47,7 @@ const data = {
 let counter = 0;
 
 function updateCategoryList(category, postId, oldCategoryTitle) {
-  const indexCat = data.categoryList.findIndex((cat) => cat.title === category);
+
   const categoryToupdate = data.categoryList.find(
     (cat) => cat.title === category
   );
@@ -30,18 +70,7 @@ function updateCategoryList(category, postId, oldCategoryTitle) {
     oldCategory.postIds = oldCategory.postIds.filter((id) => id !== postId);
   }
 
-  // if (indexCat === -1) {
-  //   data.categoryList.push({
-  //     title: category,
-  //     counter: 1,
-  //   });
-  // } else {
-  //   if (isCatUpdated) {
-  //     data.categoryList[indexCat].counter--;
-  //   } else {
-  //     data.categoryList[indexCat].counter++;
-  //   }
-  // }
+ 
 }
 
 const add = (table, item) => {
@@ -109,3 +138,4 @@ const removeAll = (table) => {
 };
 
 module.exports = { add, getBy, get, set, remove, getAll, removeAll };
+*/

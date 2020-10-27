@@ -195,7 +195,8 @@ h1 {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 .update-form input[type='text'],
@@ -233,6 +234,11 @@ select {
   -moz-transition: color 0.3s linear;
   -o-transition: color 0.3s linear;
   transition: color 0.3s linear;
+}
+
+.btn2 {
+  background-color: #46bd5d;
+  border-color: #46bd5d;
 }
 /* a.logo {
     color: #dadada;
