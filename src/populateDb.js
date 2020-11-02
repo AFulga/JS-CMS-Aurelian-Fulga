@@ -13,13 +13,13 @@ const populate = () => {
     slug: "post-1",
   });
   db.add("posts", {
-    title: "✏️ My first blog post!!!",
-    content: "Well, it works. Welcome to my blog.",
-    slug: "my-first-blog-post",
+    title: "✏️ My second blog post!!!",
+    content: " Welcome to my blog.",
+    slug: "post-2",
   });
   db.add("posts", {
-    title: "❓ My first blog post!!!",
-    content: "Well, it works. Welcome to my blog.",
+    title: "My third blog post!!!",
+    content: "It works.",
     slug: "post-3",
   });
 };
