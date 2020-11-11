@@ -7,43 +7,87 @@
     <title>Admin</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://kit.fontawesome.com/c88ab02d7f.js" crossorigin="anonymous"></script>
-    <script defer src="static.js"></script>
+    <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link href="./fonts/Larsseit-Medium/style.css" rel="stylesheet" type="text/css" />
+
+    <script defer type="module" src="static.js"></script>
 </head>
 
 <body>
-    <header>
-        <div class="header-container">
-            <h1>Dashboard</h1>
-        </div>
-
-    </header>
-    <div class="admin-container">
+    <div class="page">
         <div class="side-nav">
-            <div class="menu-item">
-                <a href="#posts">Posts</a>
+            <div class="user-img-container">
+                <i class="fas fa-user"></i>
             </div>
-            <div class="menu-item">
-                <a href="#addPosts">Add Post</a>
+            <div class="menu-btn-container">
+                <div class="top-buttons">
+                    <div class="menu-posts-btn selected">
+                        <img src="./assests/table_chart-black-18dp.svg" alt="" class="menu-post-icon">
+                        <div class="img-background"></div>
+
+                    </div>
+                    <div class="menu-posts-btn">
+                        <i class="fas fa-trash"></i>
+                        <div class="delete-count">0</div>
+                        <div class="img-background"></div>
+
+                    </div>
+                </div>
+                <!-- 
+                <div class="menu-add-post">
+                    <i class="fas fa-plus fa-1x"></i>
+
+                </div> -->
             </div>
         </div>
-        <div class="admin-body">
-            <ul id="posts-list">
-                <!-- List will be populated on init -->
-            </ul>
-            <div class="update-form">
-                <input type="text" placeholder="Post title" id="postTitle" />
-                <input type="text" placeholder="Category" id="postCategory">
-                <div class="category-wrap">
-                    <select name="Category list" id="postCategoryList">
-                        <option value="">Select category</option>
-                    </select>
-                    <i class="fas fa-plus fa-lg" title="Add new category"></i>
-                </div>
-                <input type="text" placeholder="Author" id="postAuthor">
-                <textarea name="post-content" id="postContent" cols="30" rows="10" placeholder="Content"></textarea>
-                <button id="postUpdateBtn" class="update-button btn2">Save</button>
-            </div>
 
+        <div class="main-container">
+            <header>
+                <div class="header-container">
+                    <h1>My dashboard</h1>
+                </div>
+
+            </header>
+            <div class="posts-container hide-container">
+                <div class="posts-top">
+                    <h3>Posts</h3>
+                    <div class="posts-btn-container">
+                        <div class="delete-btn">Delete</div>
+                        <div class="menu-add-post">
+                            Add Post
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="posts-header">
+                    <div class="check-box selected">
+                        <i class="far fa-square"></i>
+                        <i class="fas fa-check-square"></i>
+                    </div>
+                    <div class="flex-2">Title</div>
+                    <div class="flex-1">Author</div>
+                    <div class="flex-1">Category</div>
+                    <div class="flex-1">Date</div>
+                    <div class="edit-container"></div>
+                </div>
+
+                <div class="posts-body-container">
+                    <ul id="posts-list">
+                    </ul>
+                </div>
+            </div>
+            <div class="update-form-container hide-container">
+                <h3>Update Post</h3>
+                <div class="update-form" id="updateForm">
+
+                </div>
+            </div>
+            <div class="loader-background hide-container show-container-flex">
+                <img src="./assests/gears.svg" alt="loading">
+            </div>
         </div>
     </div>
 

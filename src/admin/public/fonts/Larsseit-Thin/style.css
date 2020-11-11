@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'Larsseit';
+    src: local('Larsseit Thin'), local('Larsseit-Thin'),
+        url('Larsseit-Thin.woff2') format('woff2'),
+        url('Larsseit-Thin.woff') format('woff'),
+        url('Larsseit-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+  }

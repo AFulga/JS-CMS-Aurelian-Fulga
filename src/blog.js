@@ -28,7 +28,9 @@ router.get('/', async (req, res) => {
 
 router.get('/posts/:slug', async (req, res) => {
   const slug = req.params.slug;
-  const post = await db.posts.findOne({ slug }, {});
+  const post = await db.posts
+    .findOne({ slug }, {})
+    .catch((err) => console.log(err));
 
   const postFormated = hp.postFormatter(post, 'longContent');
   console.log('xxx', postFormated);

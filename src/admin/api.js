@@ -37,15 +37,20 @@ router.get('/posts/:id', async (req, res) => {
   res.send(post);
 });
 
-router.post('/posts', (req, res) => {
-  const item = req.body;
-  const responseItem = db.add('posts', item);
+router.get('/posts/slug/:slug', async (req, res) => {
+  const slug = req.params.slug;
+  console.log('slug', slug);
+  const post = await db.posts.findOne({ slug }, {});
+  console.log(post);
+  const def = { slug: null };
+  res.send(post || def);
+});
 
-  if (responseItem.status) {
-    return res.status(responseItem.status).send(responseItem.msg);
-  }
-  const getPosts = db.getAll('posts');
-  res.send(getPosts);
+router.post('/posts', async (req, res) => {
+  const item = req.body;
+
+  await db.posts.insertOne({ ...item });
+  res.send('Post added');
 });
 
 router.put('/posts/:id', async (req, res) => {
@@ -68,9 +73,12 @@ router.put('/posts/:id', async (req, res) => {
   res.send('ok');
 });
 
-router.delete('/posts/:id', async (req, res) => {
-  const id = req.params.id;
-  const post = await db.posts.deleteOne({ _id: ObjectId(id) }, {});
+router.delete('/posts/:ids', async (req, res) => {
+  const ids = req.params.ids;
+  // const post = await db.posts.deleteOne({ _id: ObjectId(id) }, {});
+  const idsToDelete = ids.split('_').map((id) => ObjectId(id));
+  console.log(idsToDelete);
+  await db.posts.deleteMany({ _id: { $in: idsToDelete } });
 
   res.send('Post is deleted!');
 });

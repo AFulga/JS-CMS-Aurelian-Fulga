@@ -11,7 +11,7 @@ const getMongoUri = () => {
   const url = process.env.mongoUrl;
   return `mongodb+srv://${user}:${pass}@${url}`;
 };
-console.log(getMongoUri());
+
 const client = new MongoClient(getMongoUri(), {
   useNewUrlParser: true,
   useUnifiedTopology: true,

@@ -1,55 +1,13 @@
-// @todo: Adaugă o metodă de a adăuga articole noi
-// @todo: Afișează mai multe informații despre un articol
-// @todo: Adaugă opțiunea de a edita articolele
-// @todo: Transformă pagina într-o operă de artă
-function dateFormat(d) {
-  d = new Date(d);
-  const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(d);
-  const mo = new Intl.DateTimeFormat('en', { month: 'long' }).format(d);
-  const da = new Intl.DateTimeFormat('en', { day: 'numeric' }).format(d);
-
-  return `${mo} ${da}, ${ye}`;
-}
-
-function createButton(content, classList) {
-  return createElement('button', content, classList);
-}
-
-function createElement(type, content, className) {
-  const $element = document.createElement(type);
-
-  if (typeof content === 'string') {
-    $element.textContent = content;
-  } else {
-    if (typeof content === 'object') {
-      content.forEach((el) => $element.appendChild(el));
-    } else {
-      $element.appendChild(content);
-    }
-  }
-
-  if (className) {
-    $element.classList.add(...className.split(' '));
-  }
-
-  return $element;
-}
-
-function createRow(content, className) {
-  const $li = document.createElement('li');
-  $li.classList.add(className);
-  const $el1 = createElement('div', content[0], 'flex-2');
-  const $el2 = createElement('div', content[1], 'flex-1');
-  const $el3 = createElement('div', content[2], 'flex-1');
-  const $el4 = createElement('div', content[3], 'flex-1');
-
-  $li.appendChild($el1);
-  $li.appendChild($el2);
-  $li.appendChild($el3);
-  $li.appendChild($el4);
-
-  return $li;
-}
+import {
+  dateFormat,
+  clearInnerHtml,
+  materialInput,
+  createElement,
+  createButton,
+  toggleShow,
+  createRow,
+  getUniqueSlug,
+} from './hp.js';
 
 // get and render posts
 function fetchPosts() {
@@ -69,7 +27,7 @@ function fetchCategories() {
 function getFormData() {
   const $postTitle = document.querySelector('#postTitle');
   const $postCategory = document.querySelector('#postCategory');
-  const $postCategoryList = document.querySelector('#postCategoryList');
+  // const $postCategoryList = document.querySelector('#postCategoryList');
   const $postAuthor = document.querySelector('#postAuthor');
   const $postContent = document.querySelector('#postContent');
 
@@ -82,109 +40,195 @@ function getFormData() {
   };
 }
 
-function populateUpdateForm(categories, post) {
-  const $postTitle = document.querySelector('#postTitle');
-  const $postCategory = document.querySelector('#postCategory');
-  const $postCategoryList = document.querySelector('#postCategoryList');
-  const $postAuthor = document.querySelector('#postAuthor');
-  const $postContent = document.querySelector('#postContent');
-  const $postUpdateBtn = document.querySelector('#postUpdateBtn');
+function createUpdateFormElements() {
+  const $postTitle = materialInput('Post title', 'postTitle');
+  const $postCategory = materialInput('Category', 'postCategory');
+  const $postAuthor = materialInput('Author', 'postAuthor');
 
-  $postCategoryList.innerHTML = $postCategoryList.children[0].outerHTML;
-  const { title, category, author, content, _id } = post.posts;
+  const $postContent = materialInput('Content', 'postContent', true);
 
-  categories.forEach((cat, index) => {
-    const $option = createElement('option', cat.title);
-    if (cat.title === category) {
-      $option.selected = true;
-    }
-    $option.value = index + 1;
-    $postCategoryList.appendChild($option);
+  const $postUpdateBtn = createElement('div', 'Save', {
+    className: 'save-post-btn',
   });
 
-  $postTitle.value = title;
-  $postCategory.value = category;
-  $postAuthor.value = author;
-  $postContent.value = content;
+  const $cancelBtn = createElement('div', 'Cancel', {
+    className: 'cancel-btn',
+  });
 
-  $postUpdateBtn.dataset.postId = _id;
+  const $buttonsContainer = createElement('div', [$postUpdateBtn, $cancelBtn], {
+    className: 'buttons-container',
+  });
 
-  // data.forEach((item) => {
-  //   if (Array.isArray(item)) {
-  //     $postCategoryList.innerHTML = $postCategoryList.children[0].outerHTML;
-  //     item.forEach((cat, index) => {
-  //       const $option = createElement('option', cat.title);
+  return {
+    $postTitle,
+    $postCategory,
+    $postAuthor,
+    $postContent,
+    // $postCategoryList,
+    $postUpdateBtn,
+    $buttonsContainer,
+    // $categoryWrap,
+  };
+}
 
-  //       $option.value = index + 1;
-  //       $postCategoryList.appendChild($option);
-  //     });
-  //   } else {
-  //     console.log('dditemd', item);
-  //     const { title, category, author, content } = item.posts[0];
-  //     $postTitle.value = title;
-  //     $postCategory.value = category;
-  //     $postAuthor.value = author;
-  //     $postContent.value = content;
-  //   }
-  // });
+function populateUpdateForm(categories = null, post = null) {
+  const $updateFormContainer = document.querySelector('.update-form');
+  const updateForm = createUpdateFormElements();
+  const {
+    $postTitle,
+    $postCategory,
+    $postAuthor,
+    $postContent,
+    // $postCategoryList,
+    $postUpdateBtn,
+    $buttonsContainer,
+    // $categoryWrap,
+  } = updateForm;
+
+  const defObj = {
+    title: '',
+    category: '',
+    author: '',
+    content: '',
+    _id: '',
+  };
+
+  const { title, category, author, content, _id } = post ? post.posts : defObj;
+  const fragment = new DocumentFragment();
+
+  $postTitle.querySelector('input').value = title;
+  $postCategory.querySelector('input').value = category;
+  $postAuthor.querySelector('input').value = author;
+  $postContent.querySelector('textarea').value = content;
+
+  if (_id) {
+    $postUpdateBtn.dataset.postId = _id;
+  }
+
+  mdc.textField.MDCTextField.attachTo($postTitle);
+  mdc.textField.MDCTextField.attachTo($postCategory);
+  mdc.textField.MDCTextField.attachTo($postAuthor);
+  mdc.textField.MDCTextField.attachTo($postContent);
+
+  fragment.appendChild($postTitle);
+  fragment.appendChild($postCategory);
+  // fragment.appendChild($categoryWrap);
+  fragment.appendChild($postAuthor);
+  fragment.appendChild($postContent);
+  fragment.appendChild($buttonsContainer);
+
+  $updateFormContainer.appendChild(fragment);
 }
 
 function renderPosts(posts) {
   const $posts = document.querySelector('#posts-list');
+  const fragment = new DocumentFragment();
 
-  $posts.innerHTML = '';
-  const $headerRow = createRow(
-    ['Title', 'Category', 'Date', 'Action'],
-    'header-row'
-  );
-  $posts.appendChild($headerRow);
+  clearInnerHtml($posts);
+
   posts.forEach((post) => {
     if (post) {
-      const { title, _id, postDate, category } = post;
+      const { title, _id, postDate, category, author } = post;
+      const $chNC = createElement('i', '', {
+        className: 'far fa-square',
+      });
+      const $chC = createElement('i', '', {
+        className: 'fas fa-check-square',
+      });
+      const $checkBox = createElement('div', [$chNC, $chC], {
+        className: 'check-box',
+      });
+
+      const $editImg = document.createElement('img');
+
+      const $editContainer = createElement('div', '', {
+        className: 'edit-container',
+      });
+      $editContainer.innerHTML =
+        '<img class="edit-post" src="./assests/circle-edit.svg" />';
       const $postRow = createRow(
         [
+          $checkBox,
           title,
+          author,
           category,
           dateFormat(postDate),
-          [
-            createButton('Update', 'update-button'),
-            createButton('Delete', 'delete-button'),
-          ],
+          $editContainer,
         ],
         'post-row'
       );
-      // document.createElement('li');
-      // $post.textContent = post.title;
+
       $postRow.dataset.postId = _id;
 
-      // $post.appendChild(createDeleteButton());
-      $posts.appendChild($postRow);
+      fragment.appendChild($postRow);
     }
   });
+  $posts.appendChild(fragment);
+  toggleShow().loader();
+  toggleShow().posts();
 }
 
 function initEvents() {
   const $posts = document.querySelector('#posts-list');
-  const $postUpdateBtn = document.querySelector('#postUpdateBtn');
-  $posts.addEventListener('click', (event) => {
-    const id = event.target.closest('li').dataset.postId;
+  const $postsContainer = document.querySelector('.posts-container');
+  const $updateForm = document.querySelector('#updateForm');
+  const $page = document.querySelector('.page');
+
+  $page.addEventListener('click', (event) => {
+    // const id = event.target.closest('li').dataset.postId;
+    const targetClass = event.target.classList;
 
     // Handle delete
-    if (event.target.classList.contains('delete-button')) {
-      // @todo: Șterge postarea și din baza de date
-      // call DELETE /admin/api/posts/:postId
-      // console.log('remove post with id', event.target.parentNode.dataset.postId);
+    if (targetClass.contains('delete-btn')) {
+      const selectedPostsIds = Array.from(
+        document.querySelectorAll('li.selected')
+      )
+        .map((post) => post.dataset.postId)
+        .join('_');
 
-      fetch(`/admin/api/posts/${id}`, { method: 'DELETE' })
-        .then((resp) => fetchPosts().then(renderPosts))
-        .catch((err) => console.error(error));
-      // $posts.removeChild(event.target.parentNode.parentNode);
+      if (selectedPostsIds) {
+        toggleShow().posts();
+        toggleShow().loader();
+        fetch(`/admin/api/posts/${selectedPostsIds}`, { method: 'DELETE' })
+          .then((resp) =>
+            fetchPosts().then((posts) => {
+              renderPosts(posts);
+            })
+          )
+          .catch((err) => console.error(error));
+      }
     }
 
-    // Handle update
-    // @todo: Adaugă logica pentru update
+    //Select posts for deletion
+    if (
+      targetClass.contains('fa-square') ||
+      targetClass.contains('fa-check-square')
+    ) {
+      const $el =
+        event.target.closest('li') || event.target.closest('.posts-header');
+      const $listRows = Array.from(document.querySelectorAll('.post-row'));
 
-    if (event.target.classList.contains('update-button')) {
+      if ($el.classList.contains('posts-header')) {
+        $listRows.forEach((row) => {
+          if ($el.classList.contains('selected')) {
+            row.classList.remove('selected');
+          } else {
+            row.classList.add('selected');
+          }
+        });
+      }
+      $el.classList.toggle('selected');
+
+      if (!$listRows.every((row) => row.classList.contains('selected'))) {
+        document.querySelector('.posts-header').classList.remove('selected');
+      }
+    }
+
+    //Handle Post Edit
+    if (targetClass.contains('edit-post')) {
+      const id = event.target.closest('li').dataset.postId;
+      toggleShow().posts();
+      toggleShow().loader();
       Promise.all([
         fetchCategories().then((cat) => cat),
         fetch(`/admin/api/posts/${id}`)
@@ -193,40 +237,108 @@ function initEvents() {
       ])
         .then((values) => {
           populateUpdateForm(...values);
-          // values.forEach(val => {
-          //   if(Array.isArray(val) {
-          //     val.forEach(el => {
-          //       const $option = document.createElement
-          //     })
-          //   }
-          // })
+          toggleShow().loader();
+          toggleShow().updateForm();
         })
         .catch((err) => console.error(err));
-
-      // fetch(`/admin/api/posts/${id}`)
-      //   .then((resp) => resp.json())
-      //   .then((resp) => {
-      //     fetchCategories().then((cat) => console.log(cat));
-      //     console.log(resp);
-      //   })
-      //   .catch((err) => console.error(error));
-      // $posts.removeChild(event.target.parentNode.parentNode);
     }
-  });
-  $postUpdateBtn.addEventListener('click', function (event) {
-    const id = this.dataset.postId;
-    fetch(`/admin/api/posts/${id}`, {
-      method: 'PUT', // or 'PUT'
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(getFormData()),
-    }).then((resp) => fetchPosts().then(renderPosts));
+
+    //Handle post update
+    if (targetClass.contains('save-post-btn')) {
+      const id = event.target.dataset.postId;
+
+      const formData = getFormData();
+      clearInnerHtml($updateForm);
+      toggleShow().loader();
+
+      const route = id ? `/admin/api/posts/${id}` : '/admin/api/posts';
+      const method = id ? 'PUT' : 'POST';
+
+      const rerenderPosts = () => {
+        const body = JSON.stringify(formData);
+
+        fetch(route, {
+          method,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body,
+        }).then((resp) => {
+          fetchPosts().then((posts) => {
+            renderPosts(posts);
+            toggleShow().updateForm();
+          });
+        });
+      };
+
+      if (!id) {
+        delete formData.lastUpdate;
+        formData.img = 'https://picsum.photos/750/310';
+        formData.postDate = new Date();
+        formData.comments = [];
+        const slugRet = getUniqueSlug(async (newSlug) => {
+          const findPostBySlug = await fetch(`/admin/api/posts/slug/${newSlug}`)
+            .then((response) => response.json())
+            .then((response) => response);
+
+          return findPostBySlug;
+        }, formData.title).then((response) => {
+          formData.slug = response;
+          rerenderPosts();
+        });
+      } else {
+        rerenderPosts();
+      }
+    }
+
+    //Handle cancel
+    if (targetClass.contains('cancel-btn')) {
+      clearInnerHtml($updateForm);
+
+      toggleShow().loader();
+      fetchPosts().then((posts) => {
+        renderPosts(posts);
+        toggleShow().updateForm();
+      });
+    }
+
+    //Handle Add new post
+    if (
+      targetClass.contains('menu-add-post') ||
+      targetClass.contains('fa-plus')
+    ) {
+      clearInnerHtml($updateForm);
+      toggleShow().posts();
+      toggleShow().loader();
+      populateUpdateForm();
+      toggleShow().loader();
+      toggleShow().updateForm();
+    }
+
+    //Handle click on post menu button
+    if (targetClass.contains('menu-post-icon')) {
+      const $shownContainer = document.querySelector('.show-container');
+      toggleShow().posts();
+      if (
+        $shownContainer &&
+        $shownContainer.classList.contains('update-form-container')
+      ) {
+        toggleShow().updateForm();
+        clearInnerHtml($updateForm);
+      }
+      toggleShow().loader();
+
+      fetchPosts().then((posts) => {
+        renderPosts(posts);
+      });
+    }
   });
 }
 
 function init() {
-  fetchPosts().then(renderPosts);
+  fetchPosts().then((posts) => {
+    renderPosts(posts);
+  });
   initEvents();
 }
 

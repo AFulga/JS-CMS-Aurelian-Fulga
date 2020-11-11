@@ -1,4 +1,5 @@
 function dateFormat(d) {
+  d = new Date(d);
   const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(d);
   const mo = new Intl.DateTimeFormat('en', { month: 'long' }).format(d);
   const da = new Intl.DateTimeFormat('en', { day: 'numeric' }).format(d);
@@ -35,27 +36,15 @@ function contentFormat(content) {
 }
 
 function postFormatter(post, conentType) {
-  return {
-    ...post,
-    content: contentFormat(post.content)[conentType],
-    postDate: dateFormat(post.postDate),
-  };
+  try {
+    return {
+      ...post,
+      content: contentFormat(post.content)[conentType],
+      postDate: dateFormat(post.postDate),
+    };
+  } catch (error) {
+    console.log(error);
+  }
 }
-
-// function getUniqueSlug(arr, slug) {
-//   slug = slug
-//     .split(/[^A-Za-z0-9]/)
-//     .join(' ')
-//     .trim()
-//     .replace(/\s/g, '-')
-//     .toLowerCase();
-//   let newSlug = slug;
-//   let counter = 2;
-//   while (arr.includes(newSlug)) {
-//     newSlug = `${slug}-${counter}`;
-//   }
-
-//   return newSlug;
-// }
 
 module.exports = { postFormatter, dateFormat };
