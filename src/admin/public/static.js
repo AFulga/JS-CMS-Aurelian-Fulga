@@ -169,8 +169,8 @@ function renderPosts(posts) {
 }
 
 function initEvents() {
-  const $posts = document.querySelector('#posts-list');
-  const $postsContainer = document.querySelector('.posts-container');
+  // const $posts = document.querySelector('#posts-list');
+  // const $postsContainer = document.querySelector('.posts-container');
   const $updateForm = document.querySelector('#updateForm');
   const $page = document.querySelector('.page');
 
@@ -318,13 +318,15 @@ function initEvents() {
     //Handle click on post menu button
     if (targetClass.contains('menu-post-icon')) {
       const $shownContainer = document.querySelector('.show-container');
-      toggleShow().posts();
+
       if (
         $shownContainer &&
         $shownContainer.classList.contains('update-form-container')
       ) {
         toggleShow().updateForm();
         clearInnerHtml($updateForm);
+      } else {
+        toggleShow().posts();
       }
       toggleShow().loader();
 
